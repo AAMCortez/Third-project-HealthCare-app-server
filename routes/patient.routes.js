@@ -47,12 +47,16 @@ router.post("/patient", async (req, res) => {
          res.status(400).json({ message: "missing fields" });
          return;
       }
+      const getAge = function (birthdate) {
+         const birthTime = birthdate.getTime();
+         return Math.floor((Date.now() - birthTime) / 31536000000);
+      };
 
       const patient = {
          firstName,
          lastName,
-         birthdate,
-         age,
+         birthdate: new Date(birthdate),
+         age: getAge(new Date(birthdate)),
          bed,
          personalMedicalHistory,
          regularMedication,

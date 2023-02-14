@@ -16,12 +16,7 @@ const patientSchema = new Schema({
       type: Date,
       required: true,
    },
-   age: {
-      type: Number,
-      get: function () {
-         return Math.floor((Date.now() - this.birthdate) / 31536000000);
-      },
-   },
+   age: Number,
    bed: {
       type: Number,
       default: null,
