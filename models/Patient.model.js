@@ -25,15 +25,13 @@ const patientSchema = new Schema({
       max: 10,
    },
    pictureUrl: { String, default: "" },
-
    personalMedicalHistory: [String],
    regularMedication: [String],
    alergies: { Boolean, default: false },
-
    episode: String,
-
    medication: [String],
    healthcarePlan: [String],
+   wound: [{ type: Schema.Types.ObjectId, ref: "Wound" }],
 });
 
 const Patient = model("Patient", patientSchema);
