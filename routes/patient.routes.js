@@ -23,7 +23,7 @@ router.get("/patient/:patientId", async (req, res) => {
 });
 
 //Create patient
-router.post("/patient", async (req, res) => {
+router.post("/patient/admit", async (req, res) => {
    try {
       const {
          firstName,
@@ -42,7 +42,7 @@ router.post("/patient", async (req, res) => {
          !bed ||
          !personalMedicalHistory ||
          !regularMedication ||
-         !alergies ||
+         alergies === undefined ||
          !episode
       ) {
          res.status(400).json({ message: "missing fields" });
