@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { $where } = require("../models/Patient.model");
 const Patient = require("../models/Patient.model");
 const Wound = require("../models/Wound.model")
 
@@ -13,9 +14,9 @@ router.get("/patients", async (req, res) => {
 });
 
 //GET ONE Patient
-router.get("/patient/:patientId", async (req, res) => {
+router.get("/patient/:bed", async (req, res) => {
    try {
-      const response = await Patient.findById(req.params.patientId);
+      const response = await Patient.findOne({ bed: req.params.bed });
       res.status(200).json(response);
    } catch (error) {
       res.status(500).json({ message: error });
@@ -103,7 +104,7 @@ router.delete("/patient/:patientId", async (req, res) => {
 });
 
 // create Wound
-router.post("/task", async (req, res) => {
+router.post("/wound", async (req, res) => {
    try {
       const { imageUrl, description, treatment, patient } = req.body;
       //1. Create the wound
