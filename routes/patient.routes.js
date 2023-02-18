@@ -16,7 +16,7 @@ router.get("/patients", async (req, res) => {
 //GET ONE Patient
 router.get("/patient/:bed", async (req, res) => {
    try {
-      const response = await Patient.findOne({ bed: req.params.bed });
+      const response = await Patient.findOne({ bed: req.params.bed }).populate("wound");
       res.status(200).json(response);
    } catch (error) {
       res.status(500).json({ message: error });
@@ -74,11 +74,11 @@ router.post("/patient/admit", async (req, res) => {
 });
 
 //Update patient info
-router.put("/patient/:patientId", async (req, res) => {
+router.put("/patient/:bed", async (req, res) => {
    try {
       const { medication, healthcarePlan } = req.body;
-      const response = await Patient.findByIdAndUpdate(
-         req.params.patientId,
+      const response = await Patient.findOneAndUpdate(
+         { bed: req.params.bed },
          {
             medication,
             healthcarePlan,
@@ -92,11 +92,11 @@ router.put("/patient/:patientId", async (req, res) => {
 });
 
 //DELETE - delete or discharge a patient
-router.delete("/patient/:patientId", async (req, res) => {
+router.delete("/patient/:bed", async (req, res) => {
    try {
-      const response = await Patient.findByIdAndDelete(req.params.patientId);
+      const response = await Patient.findOneAndDelete({ bed: req.params.bed });
       res.status(200).json({
-         message: `Patient with id${req.params.patientId} was discharged or got deaded`,
+         message: `Patient in the bed: ${{ bed: req.params.bed }} was discharged or got deaded`,
       });
    } catch (error) {
       res.status(500).json({ message: error });
@@ -106,12 +106,13 @@ router.delete("/patient/:patientId", async (req, res) => {
 // create Wound
 router.post("/wound", async (req, res) => {
    try {
-      const { imageUrl, description, treatment, patient } = req.body;
+      const { pictureUrl, description, treatment, patient } = req.body;
       //1. Create the wound
-      const response = await Wound.create({ imageUrl, description, treatment, patient });
+
+      const response = await Wound.create({ pictureUrl, description, treatment, patient });
       //2. Update the patient by pushing the task id to its tasks array
-      const woundResponse = await Patient.findByIdAndUpdate(
-         patient,
+      const woundResponse = await Patient.findOneAndUpdate(
+         { bed: Number(req.body.patientId) },
          {
             $push: { wound: response._id },
          },
@@ -119,6 +120,7 @@ router.post("/wound", async (req, res) => {
       );
       res.status(200).json(woundResponse);
    } catch (error) {
+      console.log(error);
       res.status(500).json({ message: error });
    }
 });
