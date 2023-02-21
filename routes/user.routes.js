@@ -3,6 +3,7 @@ const User = require("../models/User.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
+const { isAuthenticated } = require("../middlewares/jwt.middleware");
 
 router.post("/signup", async (req, res) => {
    try {
@@ -58,7 +59,7 @@ router.post("/login", async (req, res) => {
       }
 
       const authToken = jwt.sign(
-         { _id: foundUser._id, firstName: foundUser.firstName },
+         { _id: foundUser._id, fullName: foundUser.fullName },
          process.env.TOKEN_SECRET,
          { algorithm: "HS256", expiresIn: "6h" }
       );
@@ -67,6 +68,10 @@ router.post("/login", async (req, res) => {
    } catch (error) {
       res.status(500).json({ message: error.message });
    }
+});
+
+router.get("/verify", isAuthenticated, (req, res) => {
+   return res.status(200).json(req.payload);
 });
 
 module.exports = router;
