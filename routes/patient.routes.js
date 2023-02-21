@@ -80,8 +80,8 @@ router.put("/patient/:bed", async (req, res) => {
       const response = await Patient.findOneAndUpdate(
          { bed: req.params.bed },
          {
-            medication,
-            healthcarePlan,
+           $push:{medication: medication} ,
+           $push:{healthcarePlan: healthcarePlan},
          },
          { new: true }
       );
