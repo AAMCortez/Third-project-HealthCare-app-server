@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { isAuthenticated } = require("../middlewares/jwt.middleware");
 const { $where } = require("../models/Patient.model");
 const Patient = require("../models/Patient.model");
 const Wound = require("../models/Wound.model")
@@ -34,6 +35,7 @@ router.post("/patient/admit", async (req, res) => {
          personalMedicalHistory,
          regularMedication,
          alergies,
+         alergiesSpecification,
          episode,
       } = req.body;
       if (
@@ -63,6 +65,7 @@ router.post("/patient/admit", async (req, res) => {
          personalMedicalHistory,
          regularMedication,
          alergies,
+         alergiesSpecification,
          episode,
       };
       const response = await Patient.create(patient);
@@ -74,7 +77,7 @@ router.post("/patient/admit", async (req, res) => {
 });
 
 //Update patient info
-router.put("/patient/:bed", async (req, res) => {
+router.put("/update/:bed", async (req, res) => {
    try {
       const { medication, healthcarePlan } = req.body;
       const response = await Patient.findOneAndUpdate(

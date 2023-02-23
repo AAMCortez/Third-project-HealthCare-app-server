@@ -28,6 +28,7 @@ const patientSchema = new Schema({
    personalMedicalHistory: [String],
    regularMedication: [String],
    alergies: { Boolean, default: false },
+   alergiesSpecification: String,
    episode: String,
    medication: [String],
    healthcarePlan: [String],
