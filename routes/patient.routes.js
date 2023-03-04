@@ -95,6 +95,31 @@ router.put("/update/:bed", async (req, res) => {
       res.status(500).json({ message: error });
    }
 });
+//DELETE - delete patient info
+router.put("/intervention/:bed", async (req, res) => {
+   try {
+      const bed = req.params.bed;
+      const {healthcarePlan} = req.body;
+
+      
+      const patient = await Patient.findOneAndUpdate(
+         { bed: bed },
+         { $pull: { healthcarePlan: healthcarePlan }},
+         { new: true }
+      );
+      
+      if (!patient) {
+         return res.status(404).json({ message: "Patient not found" });
+      }
+      
+      res.status(200).json({
+         message: "Healthcare plan item removed",
+         patient: patient
+      });
+   } catch (error) {
+      res.status(500).json({ message: error });
+   }
+});
 
 //DELETE - delete or discharge a patient
 router.delete("/patient/:bed", async (req, res) => {
