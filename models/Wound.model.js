@@ -7,7 +7,7 @@ const woundSchema = new Schema(
       treatment: String,
       patient: { type: Schema.Types.ObjectId, ref: "Patient" },
    },
-   { timestamp: true }
+   { timestamps: true }
 );
 
 const Wound = model("Wound", woundSchema);
